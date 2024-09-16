@@ -1,0 +1,301 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Video Games API",
+    "description": "API for managing a library of video games",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Video Games API Support"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4000"
+    }
+  ],
+  "tags": [
+    {
+      "name": "videogames"
+    }
+  ],
+  "paths": {
+    "/videogames": {
+      "post": {
+        "tags": [
+          "videogames"
+        ],
+        "summary": "Add a new video game",
+        "description": "Create a new video game in the library.",
+        "operationId": "addVideoGame",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateVideoGameDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully added a new video game",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VideoGameDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "videogames"
+        ],
+        "summary": "Get all video games",
+        "description": "Retrieve a list of all video games.",
+        "operationId": "getAllVideoGames",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved all video games",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllVideoGames"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/videogames/{id}": {
+      "get": {
+        "tags": [
+          "videogames"
+        ],
+        "summary": "Get a video game by ID",
+        "description": "Retrieve a video game by its ID.",
+        "operationId": "getVideoGameById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the video game to retrieve",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved the video game",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VideoGameDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Video game not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "videogames"
+        ],
+        "summary": "Update a video game",
+        "description": "Update an existing video game. All fields are required from the client.",
+        "operationId": "updateVideoGame",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the video game to update",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateVideoGameDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully updated the video game",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VideoGameDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Video game not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "videogames"
+        ],
+        "summary": "Delete a video game",
+        "description": "Delete an existing video game. The deleted record is returned.",
+        "operationId": "deleteVideoGame",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the video game to delete",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted the video game",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VideoGameDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Video game not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateVideoGameDTO": {
+        "type": "object",
+        "required": [
+          "title",
+          "gameStudio",
+          "ageRating",
+          "numberOfPlayers",
+          "genre"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "The Legend of Zelda: Breath of the Wild"
+          },
+          "gameStudio": {
+            "type": "string",
+            "example": "Nintendo"
+          },
+          "ageRating": {
+            "type": "integer",
+            "example": 12
+          },
+          "numberOfPlayers": {
+            "type": "integer",
+            "example": 1
+          },
+          "genre": {
+            "type": "string",
+            "example": "Action-adventure"
+          }
+        }
+      },
+      "UpdateVideoGameDTO": {
+        "type": "object",
+        "required": [
+          "title",
+          "gameStudio",
+          "ageRating",
+          "numberOfPlayers",
+          "genre"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Updated Game Title"
+          },
+          "gameStudio": {
+            "type": "string",
+            "example": "Updated Game Studio"
+          },
+          "ageRating": {
+            "type": "integer",
+            "example": 16
+          },
+          "numberOfPlayers": {
+            "type": "integer",
+            "example": 2
+          },
+          "genre": {
+            "type": "string",
+            "example": "Updated Genre"
+          }
+        }
+      },
+      "VideoGameDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "title": {
+            "type": "string",
+            "example": "The Legend of Zelda: Breath of the Wild"
+          },
+          "gameStudio": {
+            "type": "string",
+            "example": "Nintendo"
+          },
+          "ageRating": {
+            "type": "integer",
+            "example": 12
+          },
+          "numberOfPlayers": {
+            "type": "integer",
+            "example": 1
+          },
+          "genre": {
+            "type": "string",
+            "example": "Action-adventure"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-03-14T11:01:56.633+00:00"
+          }
+        }
+      },
+      "AllVideoGames": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/VideoGameDTO"
+        }
+      }
+    }
+  }
+}
