@@ -1,5 +1,6 @@
 package com.booleanuk.api.videoGames;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -21,7 +22,7 @@ public class VideoGameController {
     VideoGameMapper videoGameMapper;
 
     @PostMapping
-    public VideoGameDTO addVideoGame(@RequestBody VideoGameDTO videoGameDTO, BindingResult result){
+    public VideoGameDTO addVideoGame(@Valid @RequestBody VideoGameDTO videoGameDTO, BindingResult result){
 
         try {
             if (result.hasErrors()) {
@@ -58,7 +59,10 @@ public class VideoGameController {
     }
 
     @PutMapping("/{id}")
-    public VideoGameDTO updateVideoGame(@PathVariable (name = "id") int id, @RequestBody VideoGame videoGame){
+    public VideoGameDTO updateVideoGame(@PathVariable (name = "id") int id, @RequestBody VideoGameDTO videoGameDTO){
+
+        VideoGame videoGame = videoGameMapper.toEntity(videoGameDTO);
+
         return this.videoGamesRepository.findById(id).map(vg -> {
             if (videoGame.getTitle() != null)
                 vg.setTitle(videoGame.getTitle());
