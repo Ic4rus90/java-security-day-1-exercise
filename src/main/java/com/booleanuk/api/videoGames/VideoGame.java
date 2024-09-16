@@ -1,9 +1,12 @@
 package com.booleanuk.api.videoGames;
 
+import com.booleanuk.api.loan.Loan;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 
@@ -32,6 +35,13 @@ public class VideoGame {
 
     @Column(name = "createdAt")
     private LocalDateTime createdAt;
+
+    @Column(name = "available")
+    private Boolean available;
+
+    @OneToMany(mappedBy = "videoGame", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Loan> loanHistory;
 
     @PrePersist
     private void onCreate() {

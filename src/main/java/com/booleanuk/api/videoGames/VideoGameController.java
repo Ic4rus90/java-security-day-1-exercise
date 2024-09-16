@@ -1,9 +1,10 @@
 package com.booleanuk.api.videoGames;
 
+import com.booleanuk.api.loan.Loan;
+import com.booleanuk.api.loan.LoanRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,21 +22,20 @@ public class VideoGameController {
     @Autowired
     VideoGameMapper videoGameMapper;
 
+    @Autowired
+    LoanRepository loanRepository;
+
     @PostMapping
     public VideoGameDTO addVideoGame(@Valid @RequestBody VideoGameDTO videoGameDTO, BindingResult result){
 
-        try {
-            if (result.hasErrors()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, result.getFieldErrors().toString());
-            }
-
-            VideoGame videoGame = videoGameMapper.toEntity(videoGameDTO);
-            VideoGame savedVideoGame = this.videoGamesRepository.save(videoGame);
-
-            return videoGameMapper.toDTO(savedVideoGame);
-        } catch (ResponseStatusException e){
-            throw new ResponseStatusException(HttpStatusCode.valueOf(403), e.getMessage());
+        if (result.hasErrors()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please verify all the fields are correct.");
         }
+
+        VideoGame videoGame = videoGameMapper.toEntity(videoGameDTO);
+        VideoGame savedVideoGame = this.videoGamesRepository.save(videoGame);
+
+        return videoGameMapper.toDTO(savedVideoGame);
     }
 
     @GetMapping
@@ -91,5 +91,15 @@ public class VideoGameController {
             this.videoGamesRepository.delete(vg);
             return videoGameMapper.toDTO(vg);
         }).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Video game with the provided id does not exist"));
+    }
+
+    @GetMapping("{id}/loans")
+    public List<Loan> getRentedVideoGames(@PathVariable (name = "id") int id) {
+        VideoGame videoGame = this.videoGamesRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "No video games with the provided ID were found."));
+
+        return this.loanRepository.findLoansByVideoGame(videoGame);
     }
 }

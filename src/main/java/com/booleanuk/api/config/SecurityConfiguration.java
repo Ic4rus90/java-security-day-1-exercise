@@ -20,7 +20,8 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/videogames", "/videogames/*").authenticated()
+                        .requestMatchers("/videogames/**", "/users/**", "/loans/**").hasRole("ADMIN")
+                        .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
                         .loginPage("/login").permitAll()

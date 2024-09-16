@@ -7,6 +7,7 @@ import org.mapstruct.Mapping;
 public interface UserMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "rentedVideoGames", ignore = true)
     User toEntity(UserDTO userDTO);
 
     UserDTO toDTO(User user);

@@ -1,5 +1,7 @@
 package com.booleanuk.api.users;
 
+import com.booleanuk.api.loan.Loan;
+import com.booleanuk.api.loan.LoanRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,10 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("/users")
 public class UserController {
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    LoanRepository loanRepository;
 
     @Autowired
     UserMapper userMapper;
@@ -23,7 +28,7 @@ public class UserController {
     public UserDTO addUser(@Valid @RequestBody UserDTO userDTO, BindingResult result){
 
         if (result.hasErrors()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please verify that all the required fields are entered.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please verify that all the required fields are entered." + result.getAllErrors());
         }
 
         User user = userMapper.toEntity(userDTO);
@@ -73,5 +78,15 @@ public class UserController {
             this.userRepository.delete(user);
             return userMapper.toDTO(user);
         }).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Video game with the provided id does not exist"));
+    }
+
+    @GetMapping("{id}/loans")
+    public List<Loan> getRentedVideoGames(@PathVariable (name = "id") int id) {
+        User user = this.userRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "No users with the provided ID were found."));
+
+        return this.loanRepository.findLoansByUser(user);
     }
 }
