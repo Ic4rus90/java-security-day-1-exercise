@@ -30,9 +30,9 @@ public class VideoGameController {
             }
 
             VideoGame videoGame = videoGameMapper.toEntity(videoGameDTO);
-            this.videoGamesRepository.save(videoGame);
+            VideoGame savedVideoGame = this.videoGamesRepository.save(videoGame);
 
-            return videoGameMapper.toDTO(videoGame);
+            return videoGameMapper.toDTO(savedVideoGame);
         } catch (ResponseStatusException e){
             throw new ResponseStatusException(HttpStatusCode.valueOf(403), e.getMessage());
         }
@@ -78,9 +78,10 @@ public class VideoGameController {
 
             if (videoGame.getAgeRating() != null)
                 vg.setAgeRating(videoGame.getAgeRating());
-            this.videoGamesRepository.save(vg);
 
-            return videoGameMapper.toDTO(vg);
+            VideoGame savedVideoGame = this.videoGamesRepository.save(vg);
+
+            return videoGameMapper.toDTO(savedVideoGame);
         }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Video game with the provided id does not exist"));
     }
 
